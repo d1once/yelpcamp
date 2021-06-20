@@ -19,6 +19,7 @@ const helmet = require("helmet");
 const userRoutes = require("./routes/users");
 const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
+const MongoStore = require("connect-mongo");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
   useNewUrlParser: true,
@@ -44,7 +45,14 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(mongoSanitize());
 
+const store = {
+  mongoUrl: "mongodb://localhost:27017/yelp-camp",
+  secret: "thisshouldbeabettersecret!",
+  touchAfter: 24 * 3600,
+};
+
 const sessionConfig = {
+  store: MongoStore.create(store),
   name: "johnwick",
   secret: "thisshouldbeabettersecret!",
   resave: false,
